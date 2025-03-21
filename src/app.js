@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     let allData = [];
 
     try {
-        const response = await fetch('http://ptwranswersrv.azurewebsites.net/api/data');
+        const response = await fetch('https://ptwranswersrv.azurewebsites.net/api/data');
         if (!response.ok) throw new Error('Network response was not ok');
         const data = await response.json();
         allData = data;

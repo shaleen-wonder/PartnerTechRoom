@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let allData = []; // Store all data for filtering
 
-    try {
-        const response = await fetch('https://partnertechwinroom.azurewebsites.net/api/data');
+    try { const response = await fetch('https://partnertechwinroom.azurewebsites.net/api/data');
+       
         if (!response.ok) {
-            console.log(response.body.toString());
+            console.log(response.body);
             throw new Error('Network response was not ok');
         }
         const data = await response.json();

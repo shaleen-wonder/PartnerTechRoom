@@ -6,9 +6,11 @@ const cors = require('cors'); // Import the cors package
 const app = express();
 const port = 3000;
 
-// Enable CORS for specific origin
+// Enable CORS for your frontend's domain
 app.use(cors({
-    origin: 'https://https://purple-glacier-034869600.6.azurestaticapps.net'
+    origin: 'https://purple-glacier-034869600.6.azurestaticapps.net', // Replace with your frontend's URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true // Allow cookies and credentials if needed
 }));
 
 const config = {

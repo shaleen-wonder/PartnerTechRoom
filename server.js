@@ -42,8 +42,9 @@ app.get('/api/data', async (req, res) => {
         res.json(result.recordset);
     } catch (err) {
         console.error('SQL error', err);
-        res.status(500).send('Error fetching data');
+        res.status(500).json('Error fetching data from SQL');
     } finally {
+        res.status(500).json('Here I came');
         await sql.close();
     }
 });

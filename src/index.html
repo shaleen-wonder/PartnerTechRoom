@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Tech Win Room FAQs</title>
+    <!-- Link to Google Fonts for a clean and professional font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Corporate Styling */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* Header styling */
+        .header {
+            background-color: #004080;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .header img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        /* Main content container styling */
+        .container {
+            width: 90%; /* Use a percentage for flexible width */
+            max-width: 1200px; /* Limit the maximum width */
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Table styling */
+        .table {
+            width: 100%; /* Full width table */
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #004080;
+            color: white;
+        }
+
+        .table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .table tr:hover {
+            background-color: #e6f7ff;
+        }
+
+        /* Footer styling */
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #004080;
+            color: white;
+            margin-top: 20px;
+        }
+
+        /* Responsive Design: Adjust for smaller screens */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px; /* Reduce font size for smaller screens */
+            }
+
+            .header img {
+                max-width: 100px; /* Reduce logo size */
+            }
+
+            .container {
+                padding: 15px; /* Reduce padding */
+            }
+
+            .table th, .table td {
+                padding: 8px; /* Reduce cell padding */
+            }
+
+            .table th {
+                font-size: 14px; /* Reduce font size for table headers */
+            }
+
+            .table td {
+                font-size: 12px; /* Reduce font size for table cells */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 18px; /* Further reduce font size */
+            }
+
+            .container {
+                width: 95%; /* Increase width for smaller screens */
+            }
+
+            .table th, .table td {
+                font-size: 10px; /* Further reduce font size */
+                padding: 5px; /* Reduce padding */
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <div class="header">
+        <!-- Logo -->
+        <img src="https://partnertechwinroom.github.io/PTWRFAQs/assets/image1.png" alt="Logo">
+        <!-- Page Title -->
+        <h1>Partner Tech Win Room FAQs</h1>
+    </div>
+
+    <!-- Main Content Section -->
+    <div class="container">
+        <!-- Introduction Text -->
+        <p>Welcome to the Partner Tech Win Room FAQs page. Here you can find answers to the most common questions.</p>
+        <p>Use the filters below to narrow down your search.</p>
+        <p>For any further questions, please reach out to your Partner Tech Win Room representative.</p>
+
+        <!-- Data Table -->
+        <table id="data-table" class="table">
+            <thead>
+                <tr>
+                    <!-- Column 1: Solution Area -->
+                   
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be dynamically populated here by app.js -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        &copy; 2023 Partner Tech Win Room. All rights reserved.
+        <br>
+        <span id="row-count">Total Rows: 0</span>
+    </div>
+
+    <!-- JavaScript File -->
+    <script src="app.js"></script>
+</body>
+</html>

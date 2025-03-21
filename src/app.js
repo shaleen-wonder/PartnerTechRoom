@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const response = await fetch('https://partnertechwinroom.azurewebsites.net/api/data');
         if (!response.ok) {
+            console.log(response.body.toString());
             throw new Error('Network response was not ok');
         }
         const data = await response.json();

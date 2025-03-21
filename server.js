@@ -36,13 +36,13 @@ const config = {
 
 app.get('/api/data', async (req, res) => {
     try {
-        //let pool = await sql.connect(config);
-        //let result = await pool.request().query('SELECT * FROM MyTable'); // Replace MyTable with your actual table name
+        let pool = await sql.connect(config);
+        let result = await pool.request().query('SELECT * FROM MyTable'); // Replace MyTable with your actual table name
         
-        //console.log(result.recordset); // Log the result to the console for debugging
+        console.log(result.recordset); // Log the result to the console for debugging
         
-        //res.json(result.recordset);
-        res.json("Came inside");
+        res.json(result.recordset);
+        //res.json("Came inside");
     } catch (err) {
         console.error('SQL error', err);
         res.status(500).json('Error fetching data from SQL');

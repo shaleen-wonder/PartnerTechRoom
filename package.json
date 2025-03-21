@@ -4,7 +4,7 @@
   "description": "A static web application that reads data from Azure SQL and displays it in HTML.",
   "main": "src/app.js",
   "scripts": {
-    "start": "live-server src"
+    "start": "node server.js"
   },
   "dependencies": {
     "axios": "^1.8.4",

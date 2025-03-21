@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         try {
-            const response = await fetch('ptwranswersrv.azurewebsites.net/api/update', {
+            const response = await fetch('https://ptwranswersrv.azurewebsites.net/api/update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item)

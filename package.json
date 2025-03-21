@@ -1,0 +1,21 @@
+{
+  "name": "static-web-app",
+  "version": "1.0.0",
+  "description": "A static web application that reads data from Azure SQL and displays it in HTML.",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "live-server src"
+  },
+  "dependencies": {
+    "axios": "^1.8.4",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.21.2",
+    "mssql": "^11.0.1"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

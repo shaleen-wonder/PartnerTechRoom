@@ -6,6 +6,7 @@ const cors = require('cors'); // Import the cors package
 const app = express();
 const port = 3000;
 
+/*
 // Enable CORS for your frontend's domain
 app.use(cors({
     origin: 'https://purple-glacier-034869600.6.azurestaticapps.net', // Allow this specific origin
@@ -20,6 +21,7 @@ app.use((req, res, next) => {
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
 });
+*/
 
 const config = {
     user: process.env.DB_USER,

@@ -8,10 +8,18 @@ const port = 3000;
 
 // Enable CORS for your frontend's domain
 app.use(cors({
-    origin: 'https://purple-glacier-034869600.6.azurestaticapps.net', // Replace with your frontend's URL
+    origin: 'https://purple-glacier-034869600.6.azurestaticapps.net', // Allow this specific origin
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true // Allow cookies and credentials if needed
 }));
+
+// Ensure the Access-Control-Allow-Origin header is set for all responses
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://purple-glacier-034869600.6.azurestaticapps.net');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
+});
 
 const config = {
     user: process.env.DB_USER,

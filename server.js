@@ -6,16 +6,22 @@ const cors = require('cors'); // Import the cors package
 const app = express();
 const port = process.env.PORT || 3000; // Use the PORT environment variable or default to 3000
 
-// Enable CORS for your frontend's domain
+app.use(express.json()); // Middleware to parse JSON request bodies
+
+// Enable CORS for local development and production
 app.use(cors({
-    origin: 'https://purple-glacier-034869600.6.azurestaticapps.net', // Allow this specific origin
+    origin: ['https://gentle-tree-03b4b7200.6.azurestaticapps.net'], // Allow local and production origins
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
     credentials: true // Allow cookies and credentials if needed
 }));
 
 // Ensure the Access-Control-Allow-Origin header is set for all responses
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://purple-glacier-034869600.6.azurestaticapps.net');
+    const allowedOrigins = ['https://gentle-tree-03b4b7200.6.azurestaticapps.net'];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
@@ -58,6 +64,27 @@ app.get('/api/data', async (req, res) => {
     } catch (err) {
         console.error('SQL error', err);
         res.status(500).json('Error fetching data from SQL');
+    }
+});
+
+app.post('/api/update', async (req, res) => {
+    const updatedRecord = req.body;
+    try {
+        const pool = await poolPromise;
+        const query = `
+            UPDATE MyTable
+            SET _Answer = @Answer
+            WHERE _Area = @Area AND _Question = @Question
+        `;
+        const request = pool.request();
+        request.input('Answer', sql.NVarChar, updatedRecord._Answer);
+        request.input('Area', sql.NVarChar, updatedRecord._Area);
+        request.input('Question', sql.NVarChar, updatedRecord._Question);
+        await request.query(query);
+        res.status(200).send('Record updated successfully');
+    } catch (err) {
+        console.error('SQL error', err);
+        res.status(500).send('Error updating record');
     }
 });
 

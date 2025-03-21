@@ -6,8 +6,10 @@ const cors = require('cors'); // Import the cors package
 const app = express();
 const port = 3000;
 
-// Enable CORS for all routes
-app.use(cors());
+// Enable CORS for specific origin
+app.use(cors({
+    origin: 'https://https://purple-glacier-034869600.6.azurestaticapps.net'
+}));
 
 const config = {
     user: process.env.DB_USER,
@@ -37,5 +39,5 @@ app.get('/api/data', async (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running athttp://partnertechwinroom.azurewebsites.net/api/data`);
 });

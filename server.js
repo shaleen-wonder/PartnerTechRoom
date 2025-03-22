@@ -83,7 +83,7 @@ app.post('/api/update', async (req, res) => {
     try {
         const pool = await poolPromise;
         const query = `
-            UPDATE MyTable
+            UPDATE PTWRFAQ
             SET _Answer = @Answer
             WHERE _Area = @Area AND _Question = @Question
         `;

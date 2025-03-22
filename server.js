@@ -6,18 +6,33 @@ const cors = require('cors'); // Import the cors package
 const app = express();
 const port = process.env.PORT || 3000; // Use the PORT environment variable or default to 3000
 
-// Enable CORS for your frontend's domain
+const allowedOrigins = [
+    'https://gentle-tree-03b4b7200.6.azurestaticapps.net',
+    'purple-glacier-034869600.6.azurestaticapps.net',
+    'https://partnerwinroom.net'
+];
+
 app.use(cors({
-    origin: 'https://gentle-tree-03b4b7200.6.azurestaticapps.net/', // Allow this specific origin
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true // Allow cookies and credentials if needed
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true); // Allow the request
+        } else {
+            callback(new Error('Not allowed by CORS')); // Reject the request
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
 }));
 
 // Ensure the Access-Control-Allow-Origin header is set for all responses
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://gentle-tree-03b4b7200.6.azurestaticapps.net/');
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+        res.header('Access-Control-Allow-Origin', origin);
+    }
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
     next();
 });
 

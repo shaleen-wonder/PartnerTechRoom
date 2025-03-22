@@ -8,22 +8,33 @@ const port = process.env.PORT || 3000; // Use the PORT environment variable or d
 
 app.use(express.json()); // Middleware to parse JSON request bodies
 
-// Enable CORS for local development and production
+const allowedOrigins = [
+    'https://gentle-tree-03b4b7200.6.azurestaticapps.net',
+    'purple-glacier-034869600.6.azurestaticapps.net',
+    'https://partnerwinroom.net'
+];
+
 app.use(cors({
-    origin: ['https://gentle-tree-03b4b7200.6.azurestaticapps.net'], // Allow local and production origins
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true // Allow cookies and credentials if needed
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true); // Allow the request
+        } else {
+            callback(new Error('Not allowed by CORS')); // Reject the request
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
 }));
 
 // Ensure the Access-Control-Allow-Origin header is set for all responses
 app.use((req, res, next) => {
-    const allowedOrigins = ['https://gentle-tree-03b4b7200.6.azurestaticapps.net'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) {
         res.header('Access-Control-Allow-Origin', origin);
     }
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
     next();
 });
 
@@ -57,7 +68,7 @@ let poolPromise = sql.connect(config).then(pool => {
 app.get('/api/data', async (req, res) => {
     try {
         const pool = await poolPromise; // Use the global connection pool
-        const result = await pool.request().query('SELECT * FROM MyTable'); // Replace MyTable with your actual table name
+        const result = await pool.request().query('SELECT * FROM PTWRFAQ'); // Replace MyTable with your actual table name
         
         console.log(result.recordset); // Log the result to the console for debugging
         res.json(result.recordset);
@@ -87,6 +98,7 @@ app.post('/api/update', async (req, res) => {
         res.status(500).send('Error updating record');
     }
 });
+
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/api/data`);

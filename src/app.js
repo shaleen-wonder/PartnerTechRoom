@@ -90,4 +90,79 @@ document.addEventListener('DOMContentLoaded', async () => {
     function updateRowCount(count) {
         rowCountElement.textContent = `Total Rows: ${count}`;
     }
+
+    function openEditRow(item, rowIndex) {
+        const row = tableBody.rows[rowIndex]; // Get the row to edit
+        row.innerHTML = ''; // Clear the row content
+
+        // Create editable cells for each column
+        Object.keys(columnMapping).forEach(dbColumn => {
+            const td = document.createElement('td');
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = item[dbColumn] || ''; // Pre-fill with the current value
+            td.appendChild(input);
+            row.appendChild(td);
+        });
+
+        // Add action buttons (Save and Cancel)
+        const actionTd = document.createElement('td');
+        const saveButton = document.createElement('button');
+        saveButton.textContent = 'Save';
+        saveButton.addEventListener('click', () => saveRow(row, rowIndex));
+        actionTd.appendChild(saveButton);
+
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.addEventListener('click', () => cancelEditRow(item, rowIndex));
+        actionTd.appendChild(cancelButton);
+
+        row.appendChild(actionTd);
+    }
+
+    function saveRow(row, rowIndex) {
+        const inputs = row.querySelectorAll('input');
+        const updatedItem = {};
+
+        // Collect updated values from inputs
+        Object.keys(columnMapping).forEach((dbColumn, index) => {
+            updatedItem[dbColumn] = inputs[index].value;
+        });
+
+        // Send the updated data to the server
+        fetch('/api/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedItem)
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to update the record');
+                return response.text();
+            })
+            .then(() => {
+                // Update the local data and re-render the table
+                allData[rowIndex] = updatedItem;
+                populateRows(allData, columnMapping, tableBody);
+            })
+            .catch(error => console.error('Error updating record:', error));
+    }
+
+    function cancelEditRow(item, rowIndex) {
+        // Re-render the row with the original data
+        const row = tableBody.rows[rowIndex];
+        row.innerHTML = ''; // Clear the row content
+
+        Object.keys(columnMapping).forEach(dbColumn => {
+            const td = document.createElement('td');
+            td.textContent = item[dbColumn] || '';
+            row.appendChild(td);
+        });
+
+        const actionTd = document.createElement('td');
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', () => openEditRow(item, rowIndex));
+        actionTd.appendChild(editButton);
+        row.appendChild(actionTd);
+    }
 });

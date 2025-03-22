@@ -6,6 +6,8 @@ const cors = require('cors'); // Import the cors package
 const app = express();
 const port = process.env.PORT || 3000; // Use the PORT environment variable or default to 3000
 
+app.use(express.json()); // Middleware to parse JSON request bodies
+
 const allowedOrigins = [
     'https://gentle-tree-03b4b7200.6.azurestaticapps.net',
     'purple-glacier-034869600.6.azurestaticapps.net',
@@ -75,6 +77,28 @@ app.get('/api/data', async (req, res) => {
         res.status(500).json('Error fetching data from SQL');
     }
 });
+
+app.post('/api/update', async (req, res) => {
+    const updatedRecord = req.body;
+    try {
+        const pool = await poolPromise;
+        const query = `
+            UPDATE MyTable
+            SET _Answer = @Answer
+            WHERE _Area = @Area AND _Question = @Question
+        `;
+        const request = pool.request();
+        request.input('Answer', sql.NVarChar, updatedRecord._Answer);
+        request.input('Area', sql.NVarChar, updatedRecord._Area);
+        request.input('Question', sql.NVarChar, updatedRecord._Question);
+        await request.query(query);
+        res.status(200).send('Record updated successfully');
+    } catch (err) {
+        console.error('SQL error', err);
+        res.status(500).send('Error updating record');
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/api/data`);

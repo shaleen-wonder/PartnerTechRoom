@@ -144,7 +144,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 allData[rowIndex] = updatedItem;
                 populateRows(allData, columnMapping, tableBody);
             })
-            .catch(error => console.error('Error updating record:', error));
+            .catch(error => {
+                console.error('Error updating record:', error);
+                alert('Failed to save changes. Please try again.');
+            });
     }
 
     function cancelEditRow(item, rowIndex) {

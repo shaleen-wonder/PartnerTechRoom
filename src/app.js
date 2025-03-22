@@ -18,15 +18,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
         allData = data;
 
-        // Add filter inputs
+        // Add filter input for the Question column
         const filterRow = document.createElement('tr');
         Object.keys(columnMapping).forEach(dbColumn => {
             const filterCell = document.createElement('th');
-            const filterInput = document.createElement('input');
-            filterInput.type = 'text';
-            filterInput.placeholder = `Filter by ${columnMapping[dbColumn]}`;
-            filterInput.addEventListener('input', () => applyFilters());
-            filterCell.appendChild(filterInput);
+            if (dbColumn === '_Question') {
+                const filterInput = document.createElement('input');
+                filterInput.type = 'text';
+                filterInput.placeholder = 'Filter by Question';
+                filterInput.addEventListener('input', () => applyFilters());
+                filterCell.appendChild(filterInput);
+            }
             filterRow.appendChild(filterCell);
         });
 
@@ -116,12 +118,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     function applyFilters() {
-        const filterInputs = tableHead.querySelectorAll('input');
+        const filterInput = tableHead.querySelector('input');
         const filteredData = allData.filter(item => {
-            return Object.keys(columnMapping).every((dbColumn, index) => {
-                const filterValue = filterInputs[index].value.toLowerCase();
-                return item[dbColumn]?.toLowerCase().includes(filterValue);
-            });
+            const filterValue = filterInput.value.toLowerCase();
+            return item['_Question']?.toLowerCase().includes(filterValue);
         });
         populateRows(filteredData, columnMapping, tableBody);
     }

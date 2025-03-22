@@ -71,3 +71,12 @@ h1 {
         transform: translateX(-100%);
     }
 }
+
+input[type="text"] {
+    width: 100%; /* Make the input field take up the full width of the cell */
+    padding: 5px; /* Add padding for better appearance */
+    box-sizing: border-box; /* Include padding and border in the width calculation */
+    border: 1px solid #ccc; /* Add a light border */
+    border-radius: 4px; /* Add rounded corners */
+    font-size: 14px; /* Set font size */
+}

@@ -128,6 +128,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 input.type = 'text';
                 input.value = item[dbColumn] || ''; // Set the input value to the current data
                 input.dataset.dbColumn = dbColumn; // Store the column name in a data attribute
+                input.style.width = '100%'; // Ensure the input takes up the full width of the cell
+                input.style.boxSizing = 'border-box'; // Include padding and border in the width calculation
                 td.appendChild(input); // Append the input to the cell
             } else {
                 td.textContent = item[dbColumn] || ''; // For other columns, display the data as text
@@ -139,12 +141,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         const actionTd = document.createElement('td');
         const updateButton = document.createElement('button');
         updateButton.textContent = 'Update';
+        updateButton.style.padding = '5px 10px'; // Add padding for better appearance
+        updateButton.style.cursor = 'pointer'; // Change cursor to pointer
         updateButton.addEventListener('click', () => updateRecord(item, rowIndex, editRow)); // Attach click event to update the record
         actionTd.appendChild(updateButton);
         editRow.appendChild(actionTd);
 
-        // Insert the editable row below the current row
-        tableBody.insertBefore(editRow, tableBody.children[rowIndex + 1]);
+        // Replace the current row with the editable row
+        tableBody.replaceChild(editRow, tableBody.children[rowIndex]);
     }
 
     // Function to update a record in the database

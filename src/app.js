@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     let allData = [];
+    let isQuestionSortedAsc = true; // Track sorting order for the Question column
 
     try {
         const response = await fetch('https://ptwranswersrv.azurewebsites.net/api/data');
@@ -18,113 +19,23 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
         allData = data;
 
-        Object.values(columnMapping).forEach(displayName => {
+        Object.keys(columnMapping).forEach(dbColumn => {
             const th = document.createElement('th');
-            th.textContent = displayName;
+            th.textContent = columnMapping[dbColumn];
+
+            // Add sorting functionality to the Question column
+            if (dbColumn === '_Question') {
+                th.style.cursor = 'pointer';
+                th.addEventListener('click', () => {
+                    sortQuestions();
+                });
+            }
+
             tableHead.appendChild(th);
         });
 
         const actionTh = document.createElement('th');
-        actionTh.textContent = 'Answer by editing the row';
-        actionTh.style.width = '200px';
-        actionTh.style.textAlign = 'center';
-        actionTh.style.fontWeight = 'bold';
-        actionTh.style.fontSize = '16px';
-        actionTh.style.color = 'blue';
-        actionTh.style.backgroundColor = '#f0f0f0';
-        actionTh.style.border = '1px solid #ccc';
-        actionTh.style.padding = '10px';
-        actionTh.style.borderRadius = '5px';
-        actionTh.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
-        actionTh.style.cursor = 'pointer';
-        actionTh.style.transition = 'background-color 0.3s';
-        actionTh.addEventListener('mouseover', () => {
-            actionTh.style.backgroundColor = '#e0e0e0';
-        });
-        actionTh.addEventListener('mouseout', () => {
-            actionTh.style.backgroundColor = '#f0f0f0';
-        }
-        );  
-        actionTh.addEventListener('click', () => {
-            const newRow = document.createElement('tr');
-            Object.keys(columnMapping).forEach(dbColumn => {
-                const td = document.createElement('td');
-                if (dbColumn === '_Answer') {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.placeholder = 'Enter answer';
-                    input.dataset.dbColumn = dbColumn;
-                    td.appendChild(input);
-                } else {
-                    td.textContent = '';
-                }
-                newRow.appendChild(td);
-            });
-
-            const actionTd = document.createElement('td');
-            const saveButton = document.createElement('button');
-            saveButton.textContent = 'Save';
-            saveButton.addEventListener('click', () => saveNewRow(newRow));
-            actionTd.appendChild(saveButton);
-            newRow.appendChild(actionTd);
-
-            tableBody.appendChild(newRow);
-        }
-        );
-        actionTh.addEventListener('click', () => {
-            const newRow = document.createElement('tr');
-            Object.keys(columnMapping).forEach(dbColumn => {
-                const td = document.createElement('td');
-                if (dbColumn === '_Answer') {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.placeholder = 'Enter answer';
-                    input.dataset.dbColumn = dbColumn;
-                    td.appendChild(input);
-                } else {
-                    td.textContent = '';
-                }
-                newRow.appendChild(td);
-            });
-
-            const actionTd = document.createElement('td');
-            const saveButton = document.createElement('button');
-            saveButton.textContent = 'Save';
-            saveButton.addEventListener('click', () => saveNewRow(newRow));
-            actionTd.appendChild(saveButton);
-            newRow.appendChild(actionTd);
-
-            tableBody.appendChild(newRow);
-        }
-        );
-        actionTh.addEventListener('click', () => {
-            const newRow = document.createElement('tr');
-            Object.keys(columnMapping).forEach(dbColumn => {
-                const td = document.createElement('td');
-                if (dbColumn === '_Answer') {
-                    const input = document.createElement('input');
-                    input.type = 'text';
-                    input.placeholder = 'Enter answer';
-                    input.dataset.dbColumn = dbColumn;
-                    td.appendChild(input);
-                } else {
-                    td.textContent = '';
-                }
-                newRow.appendChild(td);
-            });
-
-            const actionTd = document.createElement('td');
-            const saveButton = document.createElement('button');
-            saveButton.textContent = 'Save';
-            saveButton.addEventListener('click', () => saveNewRow(newRow));
-            actionTd.appendChild(saveButton);
-            newRow.appendChild(actionTd);
-
-            tableBody.appendChild(newRow);
-        }
-        );
-       
-        
+        actionTh.textContent = 'Actions';
         tableHead.appendChild(actionTh);
 
         populateRows(allData, columnMapping, tableBody);
@@ -154,6 +65,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateRowCount(data.length);
     }
 
+    function sortQuestions() {
+        allData.sort((a, b) => {
+            const questionA = a._Question.toLowerCase();
+            const questionB = b._Question.toLowerCase();
+
+            if (isQuestionSortedAsc) {
+                return questionA > questionB ? 1 : -1;
+            } else {
+                return questionA < questionB ? 1 : -1;
+            }
+        });
+
+        isQuestionSortedAsc = !isQuestionSortedAsc; // Toggle sorting order
+        populateRows(allData, columnMapping, tableBody); // Re-render the table
+    }
+
     function openEditRow(item, rowIndex) {
         const editRow = document.createElement('tr');
         Object.keys(columnMapping).forEach(dbColumn => {
@@ -177,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         actionTd.appendChild(updateButton);
         editRow.appendChild(actionTd);
 
-        tableBody.insertBefore(editRow, tableBody.children[rowIndex + 1]);
+        tableBody.replaceChild(editRow, tableBody.children[rowIndex]);
     }
 
     async function updateRecord(item, rowIndex, editRow) {
@@ -194,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 body: JSON.stringify(item)
             });
             if (!response.ok) throw new Error('Failed to update record');
-            
+
             // Update the local data
             allData[rowIndex] = item;
             populateRows(allData, columnMapping, tableBody);
@@ -207,7 +134,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // Function to show a popup notification
+    function saveRow(row, rowIndex) {
+        const inputs = row.querySelectorAll('input');
+        const updatedItem = {};
+
+        // Collect updated values from inputs
+        Object.keys(columnMapping).forEach((dbColumn, index) => {
+            updatedItem[dbColumn] = inputs[index].value;
+        });
+
+        // Send the updated data to the server
+        fetch('/api/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedItem)
+        })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to update the record');
+                return response.text();
+            })
+            .then(() => {
+                // Update the local data and re-render the table
+                allData[rowIndex] = updatedItem;
+                populateRows(allData, columnMapping, tableBody);
+            })
+            .catch(error => console.error('Error updating record:', error));
+    }
+
+    function updateRowCount(count) {
+        rowCountElement.textContent = `Total Rows: ${count}`;
+    }
+
     function showPopup(message, isError = false) {
         const popup = document.createElement('div');
         popup.textContent = message;
@@ -215,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         popup.style.bottom = '20px';
         popup.style.right = '20px';
         popup.style.padding = '10px 20px';
-        popup.style.backgroundColor = isError ? '#ff4d4d' : '#4caf50'; // Red for error, green for success
+        popup.style.backgroundColor = isError ? '#ff4d4d' : '#4caf50';
         popup.style.color = 'white';
         popup.style.borderRadius = '5px';
         popup.style.boxShadow = '0 2px 5px rgba(0, 0, 0, 0.2)';
@@ -226,14 +183,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         document.body.appendChild(popup);
 
-        // Automatically remove the popup after 3 seconds
         setTimeout(() => {
             popup.style.opacity = '0';
-            setTimeout(() => popup.remove(), 500); // Wait for the fade-out transition
+            setTimeout(() => popup.remove(), 500);
         }, 3000);
-    }
-
-    function updateRowCount(count) {
-        rowCountElement.textContent = `Total Rows: ${count}`;
     }
 });

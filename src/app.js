@@ -128,6 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         tableHead.appendChild(actionTh);
 
         populateRows(allData, columnMapping, tableBody);
+        addFilterInputs(columnMapping, tableHead, tableBody, allData);
     } catch (error) {
         console.error('Error fetching data:', error);
     }
@@ -235,5 +236,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     function updateRowCount(count) {
         rowCountElement.textContent = `Total Rows: ${count}`;
+    }
+
+    function addFilterInputs(columnMapping, tableHead, tableBody, allData) {
+        const filterRow = document.createElement('tr');
+        Object.keys(columnMapping).forEach(dbColumn => {
+            const filterTd = document.createElement('td');
+            const filterInput = document.createElement('input');
+            filterInput.type = 'text';
+            filterInput.placeholder = `Filter by ${columnMapping[dbColumn]}`;
+            filterInput.addEventListener('input', () => filterTable(allData, columnMapping, tableBody));
+            filterTd.appendChild(filterInput);
+            filterRow.appendChild(filterTd);
+        });
+
+        // Add an empty cell for the action column
+        const actionTd = document.createElement('td');
+        filterRow.appendChild(actionTd);
+
+        tableHead.appendChild(filterRow);
+    }
+
+    function filterTable(data, columnMapping, tableBody) {
+        const filterInputs = document.querySelectorAll('thead tr:nth-child(2) input');
+        const filteredData = data.filter(item => {
+            return Array.from(filterInputs).every((input, index) => {
+                const dbColumn = Object.keys(columnMapping)[index];
+                const filterValue = input.value.toLowerCase();
+                return item[dbColumn]?.toLowerCase().includes(filterValue);
+            });
+        });
+
+        populateRows(filteredData, columnMapping, tableBody);
     }
 });

@@ -22,7 +22,7 @@ async function fetchData() {
         let pool = await sql.connect(config);
 
         // Update the query with the correct table name
-        let result = await pool.request().query('SELECT * FROM MyTable'); 
+        let result = await pool.request().query('SELECT * FROM PTWRFAQ'); 
         console.log(result.recordset); // Log the result to the console for debugging
         return result.recordset;
     } catch (err) {

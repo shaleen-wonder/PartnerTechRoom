@@ -51,7 +51,7 @@ let poolPromise = sql.connect(config).then(pool => {
 app.get('/api/data', async (req, res) => {
     try {
         const pool = await poolPromise; // Use the global connection pool
-        const result = await pool.request().query('SELECT * FROM MyTable'); // Replace MyTable with your actual table name
+        const result = await pool.request().query('SELECT * FROM PTWRFAQ'); // Replace MyTable with your actual table name
         
         console.log(result.recordset); // Log the result to the console for debugging
         res.json(result.recordset);
